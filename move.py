@@ -7,9 +7,52 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
+module: move
+short_description: Move a file
+description:
+  - Use this module to move a file.
+version_added: "0.1"
+options:
+  src:
+    description:
+      - The file to move.
+    type: str
+    required: yes
+  dest:
+    description:
+      - The new path for the file.
+    type: str
+    required: yes
+  overwrite:
+    alias:
+      - force
+      - insist
+    description:
+      - Insist that the file is moved.
+    type: bool
+    default: no
+requirements:
+  - an installed Linux system
+author:
+  - Adam J. Richardson (@FatmanUK)
+extends_documentation_fragment:
+    - action_common_attributes
+attributes:
+    check_mode:
+        support: full
+    diff_mode:
+        support: full
+    platform:
+        support: full
+        platforms: posix
 '''
 
 EXAMPLES = r'''
+- name: 'Restore backup file'
+  move:
+    src: '/etc/my-service-config.bak'
+    dest: '/etc/my-service-config'
+    force: yes
 '''
 
 RETURN = r'''#'''
@@ -35,6 +78,8 @@ def main():
     res_args = dict()
     warnings = list()
 
+    # fail if already present
+    # change if copied
 
     res_args = dict(
         warnings=warnings,
