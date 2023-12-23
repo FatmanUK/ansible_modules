@@ -7,45 +7,37 @@ __metaclass__ = type
 
 DOCUMENTATION = r'''
 ---
-module: sysctl_reload
-short_description: Reload sysctl from /etc/sysctl.conf
+module: 'sysctl_reload'
+short_description: 'Reload sysctl from /etc/sysctl.conf'
 description:
-  - Use this module to reload sysctl config.
-version_added: "0.1"
+  - 'Use this module to reload sysctl config.'
+version_added: '0.1'
 options:
 requirements:
-  - installed Linux system
+  - 'installed Linux system'
 author:
-  - Adam J. Richardson (@FatmanUK)
+  - 'Adam J. Richardson (@FatmanUK)'
 extends_documentation_fragment:
-    - action_common_attributes
+    - 'action_common_attributes'
 attributes:
     check_mode:
-        support: full
+        support: 'full'
     diff_mode:
-        support: full
+        support: 'full'
     platform:
-        support: full
-        platforms: posix
+        support: 'full'
+        platforms: 'posix'
 '''
 
 EXAMPLES = r'''
-- name: Reload sysctl configuration
+- name: 'Reload sysctl configuration'
   sysctl_reload:
 '''
 
 RETURN = r'''#'''
 
-#import os
-#import platform
-#import pwd
-#import re
-#import sys
-#import tempfile
-
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.text.converters import to_native
-#from ansible.module_utils.six.moves import shlex_quote
 
 def main():
     module = AnsibleModule(
