@@ -9,7 +9,7 @@ description:
 version_added: '0.1'
 options:
 requirements:
-  - 'installed Linux system'
+  - '/usr/bin/ansible'
 author:
   - 'Adam J. Richardson (@FatmanUK)'
 extends_documentation_fragment:

@@ -15,8 +15,7 @@ options:
     type: 'str'
     required: yes
 requirements:
-  - 'installed Linux system'
-  - 'ansible'
+  - '/usr/bin/ansible'
 author:
   - 'Adam J. Richardson (@FatmanUK)'
 extends_documentation_fragment:
