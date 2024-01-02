@@ -58,6 +58,7 @@ EXAMPLES = r'''
 RETURN = r'''#'''
 
 from ansible.module_utils.basic import AnsibleModule
+from ansible.module_utils.common.text.converters import to_native
 
 def main():
     module = AnsibleModule(
@@ -98,10 +99,11 @@ def main():
         path
     ]
 
-    rc, out, err = self.module.run_command(localedef_argv, environ_update=self.LANG_ENV)
-    if rc != 0 or self._stderr_failed(err):
+    rc, out, err = module.run_command(localedef_argv)
+    #, environ_update=LANG_ENV)
+    if rc != 0 or _stderr_failed(err):
         outerr = to_native(out) + to_native(err)
-        self.module.fail_json(msg=f'{failmsg}: {outerr}')
+        module.fail_json(msg=f'{failmsg}: {outerr}')
 
     res_args = dict(
         warnings=warnings,
