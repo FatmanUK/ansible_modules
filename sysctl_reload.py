@@ -1,10 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# Copyright: (c) 2023, Adam J. Richardson <fatman.uk@gmail.com>
-
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
 DOCUMENTATION = r'''
 ---
 module: 'sysctl_reload'
