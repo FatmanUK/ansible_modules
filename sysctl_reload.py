@@ -7,7 +7,7 @@ short_description: 'Reload sysctl from /etc/sysctl.conf'
 description:
   - 'Use this module to reload sysctl config.'
 version_added: '0.1'
-options:
+options: { }
 requirements:
   - '/usr/bin/ansible'
 author:
