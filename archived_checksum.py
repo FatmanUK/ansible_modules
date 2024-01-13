@@ -107,6 +107,7 @@ def main():
         _file,
     ]
 
+    # print(untar_argv)
     rc, out, err = module.run_command(untar_argv)
 
     if rc != 0 or is_stderr_failed(err):
@@ -121,7 +122,8 @@ def main():
         res_args['stdout'] = out
         res_args['rc'] = rc
 
-    unlink(f'/dev/shm/{_file}')
+    # Exception. Why is this not here? What deletes it?
+    #unlink(f'/dev/shm/{_file}')
 
     res_args['changed']=changed
     res_args['warnings']=warnings
