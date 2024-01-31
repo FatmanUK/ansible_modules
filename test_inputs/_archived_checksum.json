@@ -1,0 +1,6 @@
+{
+  "ANSIBLE_MODULE_ARGS": {
+    "path": "/home/adam.richardson/k3s_playground/binaries/k3s-v1.28.4+k3s2.tgz",
+    "archived_file": "k3s"
+  }
+}

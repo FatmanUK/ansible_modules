@@ -1,4 +1,8 @@
-# -*- coding: utf-8 -*-
+#!/bin/env python3
+
+# Test with: $ ./archived_checksum.py <test_inputs/_archived_checksum.json
+# Believe it or not, it works great! :)
+# Insanely, ansible will try to use the test data as a module if you remove the initial underscore from the filename. :|
 
 DOCUMENTATION = r'''
 ---
@@ -40,32 +44,36 @@ options:
 requirements:
   - '/usr/bin/ansible'
 author:
-  - 'Adam J. Richardson (@FatmanUK)'
+  - 'Adam J. Richardson (@Fatman@twit.social)'
 extends_documentation_fragment:
-    - 'action_common_attributes'
+  - 'action_common_attributes'
 attributes:
-    check_mode:
-        support: 'none'
-    diff_mode:
-        support: 'none'
-    platform:
-        support: 'full'
-        platforms: 'posix'
+  check_mode:
+    support: 'none'
+  diff_mode:
+    support: 'none'
+  platform:
+    support: 'full'
+    platforms: 'posix'
+...
 '''
 
 EXAMPLES = r'''
+---
 - name: 'Get sha256 checksum from tarballed file'
   archived_checksum:
     path: 'the_tarball.tgz'
     archived_file: 'the_file.txt'
+...
 '''
 
+# TODO: What should go in the RETURN string?
 RETURN = r'''#'''
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.text.converters import to_native
-#from re import search
 from os import unlink
+from os.path import exists
 
 def is_stderr_failed(err):
     # A command can fail to set a value even if it returns an exit
@@ -73,6 +81,21 @@ def is_stderr_failed(err):
     #errors_regex = r'^sysctl: setting key "[^"]+": (Invalid argument|Read-only file system)$'
     #return search(errors_regex, err, re.MULTILINE) is not None
     return False  # TODO: this function
+
+def has_ancient_cksum():
+    # v<9.0
+    #ver_argv = []
+    # TODO: finish this
+    #rc, out, err = module.run_command(untar_argv)
+    return True
+
+def delete_my_file(my_file):
+    try:
+        unlink(my_file)
+    except:
+        # Well, it's not there, so job done I guess. Just return.
+        # Why is this not here? What deletes it?
+        return
 
 def main():
     module = AnsibleModule(
@@ -94,6 +117,9 @@ def main():
 
     _flags = _flags.replace('sha256', _type)
 
+    temppath = '/dev/shm'
+    tempfile = f'{temppath}/{_file}'
+
     changed = False  # doesn't change anything ever
     warnings = list()
     res_args = dict()
@@ -103,7 +129,7 @@ def main():
         'xzf',
         _path,
         '-C',
-        '/dev/shm',
+        temppath,
         _file,
     ]
 
@@ -113,7 +139,17 @@ def main():
     if rc != 0 or is_stderr_failed(err):
         module.fail_json(msg="Failed to untar: %s" % to_native(out) + to_native(err))
     else:
-        cksum_argv = [ _exe ] + _flags.split(' ') + [ f'/dev/shm/{_file}' ]
+        # make sure we have cksum, otherwise this will fail spectacularly
+        if (not exists('/usr/bin/cksum')) or has_ancient_cksum():
+            _exe = '/bin/sha256sum'
+            _flags = ''
+
+        # do "env cksum" instead of specifying path?
+        cksum_argv = [ _exe ]
+        if _flags != '':
+            cksum_argv.append(_flags.split(' '))
+        cksum_argv.append(tempfile)
+
         rc, out, err = module.run_command(cksum_argv)
 
         if rc != 0 or is_stderr_failed(err):
@@ -122,8 +158,7 @@ def main():
         res_args['stdout'] = out
         res_args['rc'] = rc
 
-    # Exception. Why is this not here? What deletes it?
-    #unlink(f'/dev/shm/{_file}')
+    delete_my_file(tempfile)
 
     res_args['changed']=changed
     res_args['warnings']=warnings
