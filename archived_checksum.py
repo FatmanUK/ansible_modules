@@ -157,6 +157,7 @@ def main():
 
         res_args['stdout'] = out
         res_args['rc'] = rc
+        res_args['checksum'] = out.split(' ')[0]
 
     delete_my_file(tempfile)
 
